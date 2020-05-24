@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <title>Index page</title>
+</head>
+
+<body>
+    <div class="container" id="container"></div>
+    <script>
+
+    </script>
+    <script type="module">
+
+        import { UrlBuilder, RestAPI, PaginationRender, DOMRender, SearchParser } from './js/initialize.js'
+
+        $(document).ready(async function () {
+
+            const baseUrl = "https://jsonplaceholder.typicode.com";
+
+            //prepare url
+            let url = new UrlBuilder(baseUrl)
+                .users()
+                .build();
+
+            let searchHelper = new SearchParser();
+
+            //prepare api
+            let restAPI = new RestAPI();
+
+            //send query
+            let response = await restAPI.queryDataAsync(url);
+
+            //prepare to render
+            // let pagination = new DOMRender(response);
+            let pagination = new PaginationRender(new DOMRender(response));
+
+            pagination.render("#container", searchHelper.Value, "name", "email");
+
+            $('img').click(function () {
+
+                let itemId = $(this).parent().attr('data-id');
+
+                let url = new UrlBuilder(baseUrl)
+                    .users()
+                    .id(itemId)
+                    .build();
+
+                $(location).attr('href', `detail.html?user=${itemId}`);
+            })
+        });
+
+    </script>
+</body>
+
+</html>

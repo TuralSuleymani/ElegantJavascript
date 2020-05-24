@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <title>Detail page</title>
+</head>
+
+<body>
+    <div class="container" id="container"></div>
+    <script type="module">
+
+        import { UrlBuilder, RestAPI, DOMRender, SearchParser } from './js/initialize.js'
+
+        $(document).ready(async function () {
+
+            const baseUrl = "https://jsonplaceholder.typicode.com";
+
+            let searchHelper = new SearchParser("user");
+
+            //prepare url
+            let url = new UrlBuilder(baseUrl)
+                .users()
+                .id(searchHelper.Value)
+                .build();
+
+            //prepare api
+            let restAPI = new RestAPI();
+
+            //send query
+            let response = await restAPI.queryDataAsync(url);
+
+            //prepare dom
+            let domRender = new DOMRender(new Array(response));
+
+            domRender.render("#container");
+        });
+    </script>
+</body>
+
+</html>
